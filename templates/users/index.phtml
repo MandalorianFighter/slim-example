@@ -1,0 +1,32 @@
+<h1>Users</h1>
+
+<?php if (isset($_SESSION['isAdmin'])): ?>
+<form action="/logout" method="post">
+    <input type="hidden" name="_METHOD" value="DELETE">
+    <input type="submit" value="Logout">
+</form>
+<?php endif; ?>
+
+<?php if(!empty($flash)) { 
+  foreach($flash as $message) {
+    print_r($message[0]);
+  } } ?>
+<p><a href="/users/new">Add new user</a></p>
+<div>
+<form action="/users" method="get">
+  <input type="search" name="term" value="<?= $term ? htmlspecialchars($term) : '' ?>" />
+  <input type="submit" value="Search" />
+</form>
+</div>
+<table>
+  <?php foreach ($users as $id=>$user): ?>
+    <tr>
+      <td>
+          <a href="/users/<?= $id ?>"><?= $user['nickname'] ?></a>
+      </td>
+      <td>
+         <?= $user['email'] ?>
+      </td>
+    </tr>
+  <?php endforeach ?>
+</table>

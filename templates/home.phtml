@@ -1,0 +1,10 @@
+<?php if(!empty($flash)) {
+  foreach($flash as $message) {
+    print_r($message[0]);
+  } } ?>
+<h1>Login</h1>
+<form action="/" method="post">
+  <input type="email" name="user[email]" placeholder="email" value="<?= htmlspecialchars($user['email']) ?>" />
+  <input type="password" name="user[pass]" placeholder="password" value="<?= htmlspecialchars($user['pass']) ?>" />
+  <input type="submit" value="Login" />
+</form>

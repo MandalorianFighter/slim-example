@@ -3,7 +3,13 @@
     "autoload": {
         "psr-4": {
             "Mandalorian\\SlimExample\\": "src/"
-        }
+        },
+	"files": [
+            "src/UserRepository.php",
+            "src/Validator.php",
+	    "src/PostRepository.php",
+	    "src/ValidatorPost.php"
+        ]
     },
     "authors": [
         {
@@ -15,6 +21,10 @@
         "slim/slim": "^4.9",
         "slim/psr7": "^1.5",
         "slim/http": "^1.2",
+        "slim/php-view": "^3.1",
+        "php-di/php-di": "^6.3",
+        "symfony/string": "^6.0",
+        "slim/flash": "^0.4.0",
         "tightenco/collect": "^8.81"
     }
 }
