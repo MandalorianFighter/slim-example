@@ -22,9 +22,6 @@ $app->add(MethodOverrideMiddleware::class);
 $router = $app->getRouteCollector()->getRouteParser();
 $vali = new Slim\Example\Validator();
 
-const EMAIL = 'admin@gmail.com';
-const PASS = 'qwerty123';
-
 function getUsers($request) {
     return json_decode($request->getCookieParam('users') ?? '', true);
 }
@@ -33,54 +30,12 @@ function filterByTerm($users, $term) {
     return array_filter($users, fn($user) => str_contains($user['nickname'], $term) !== false);
 }
 
-$app->get('/', function ($request, $response) use ($router) {
-    if(isset($_SESSION['isAdmin'])) {
-        return $response->withRedirect($router->urlFor('users'));
-    }
-
-    $messages = $this->get('flash')->getMessages();
-    $params = [
-        'email' => '',
-        'flash' => $messages
-    ];
-
-    return $this->get('renderer')->render($response, 'home.phtml', $params);
-})->setName('home');
-
-$app->post('/', function ($request, $response) use ($router) {
-
-    $user = $request->getParsedBodyParam('user');
-
-    $hash = password_hash(PASS, PASSWORD_DEFAULT);
-    $verify = password_verify($user['pass'], $hash);
-    
-        if ($user['email'] === EMAIL and $verify === true) {
-        $_SESSION['isAdmin'] = true;
-        $this->get('flash')->addMessage('success', 'Hey, Admin! You logged in successfully.');
-        return $response->withRedirect($router->urlFor('users'));
-    }
-    $this->get('flash')->addMessage('error', 'Access Denied!');
-    $params = [
-        'email' => $email,
-        'errors' => $errors
-    ];
-    $response = $response->withStatus(422);
-    return $response->withRedirect($router->urlFor('home'));
+$app->get('/', function ($request, $response) {
+    $response->getBody()->write('Welcome to Slim!');
+    return $response;
 });
 
-$app->delete('/logout', function ($request, $response) use ($router) {
-    session_destroy();
-    
-    return $response->withRedirect($router->urlFor('home'));
-});
-
-$app->get('/users', function ($request, $response) use ($router) {
-
-    if (!isset($_SESSION['isAdmin'])) {
-        $this->get('flash')->addMessage('error', 'Access Denied! Please login!');
-
-        return $response->withRedirect($router->urlFor('home'));
-    }
+$app->get('/users', function ($request, $response) {
 
     $users = getUsers($request);
     $term = $request->getQueryParam('term');
@@ -96,7 +51,7 @@ $app->get('/users', function ($request, $response) use ($router) {
     return $this->get('renderer')->render($response, 'users/index.phtml', $params);
 })->setName('users');
 
-$app->post('/users', function ($request, $response) use ($vali, $router) {
+$app->post('/users', function ($request, $response) use ($vali) {
 
     $users = getUsers($request);
     $user = $request->getParsedBodyParam('user');
@@ -109,7 +64,7 @@ $app->post('/users', function ($request, $response) use ($vali, $router) {
         $encodedUsers = json_encode($users);
         $this->get('flash')->addMessage('success', 'New user is created successfully');
         return $response->withHeader('Set-Cookie', "users={$encodedUsers};Path=/")
-        ->withRedirect($router->urlFor('users'));
+        ->withRedirect('users');
     }
     $params = [
         'user' => $user,
@@ -119,29 +74,16 @@ $app->post('/users', function ($request, $response) use ($vali, $router) {
     return $this->get('renderer')->render($response, "users/new.phtml", $params);
 });
 
-$app->get('/users/new', function ($request, $response) use ($router) {
-
-    if (!isset($_SESSION['isAdmin'])) {
-        $this->get('flash')->addMessage('error', 'Access Denied! Please login!');
-
-        return $response->withRedirect($router->urlFor('home'));
-    }
-
+$app->get('/users/new', function ($request, $response) {
     $params = [
         'user' => ['id' => '', 'nickname' => '', 'email' => ''],
         'errors' => []
     ];
     return $this->get('renderer')->render($response, "users/new.phtml", $params);
-})->setName('createUser');
+});
 
-$app->get('/users/{id}', function ($request, $response, $args) use ($router) {
+$app->get('/users/{id}', function ($request, $response, $args) {
 
-    if (!isset($_SESSION['isAdmin'])) {
-        $this->get('flash')->addMessage('error', 'Access Denied! Please login!');
-
-        return $response->withRedirect($router->urlFor('home'));
-    }
-    
     $users = getUsers($request);
     $id = $args['id'];
 
@@ -155,14 +97,8 @@ $app->get('/users/{id}', function ($request, $response, $args) use ($router) {
     }
 })->setName('user');
 
-$app->get('/users/{id}/edit', function ($request, $response, $args) use ($router) {
+$app->get('/users/{id}/edit', function ($request, $response, $args) {
 
-    if (!isset($_SESSION['isAdmin'])) {
-        $this->get('flash')->addMessage('error', 'Access Denied! Please login!');
-
-        return $response->withRedirect($router->urlFor('home'));
-    }
-    
     $id = $args['id'];
     $users = getUsers($request);
     $user = $users[$id];
