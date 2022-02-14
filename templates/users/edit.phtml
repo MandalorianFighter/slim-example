@@ -1,6 +1,6 @@
  <?php if(!empty($flash)) { 
   foreach($flash as $message) {
-    print_r($message);
+    print_r($message[0]);
   } } ?>
 <form action="/users/<?= htmlspecialchars($id) ?>" method="post">
     <input type="hidden" name="_METHOD" value="PATCH">
