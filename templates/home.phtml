@@ -3,6 +3,8 @@
     print_r($message[0]);
   } } ?>
 <h1>Login</h1>
+
+<p>Write email "admin@gmail.com" and password "qwerty123" below and press «Login»</p>
 <form action="/" method="post">
   <input type="email" name="user[email]" placeholder="email" value="<?= htmlspecialchars($user['email']) ?>" />
   <input type="password" name="user[pass]" placeholder="password" value="<?= htmlspecialchars($user['pass']) ?>" />
