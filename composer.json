@@ -5,10 +5,7 @@
             "Mandalorian\\SlimExample\\": "src/"
         },
 	"files": [
-            "src/UserRepository.php",
-            "src/Validator.php",
-	    "src/PostRepository.php",
-	    "src/ValidatorPost.php"
+            "src/Validator.php"
         ]
     },
     "authors": [
